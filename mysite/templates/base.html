@@ -1,49 +1,125 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title%}{% endblock %}</title>
-    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title%}{% endblock %}</title>
+  <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" />
+  {% load static %}
+  <link rel="stylesheet" href="{% static "css/style.css" %}">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body>
 
-<div class="min-h-screen flex flex-row bg-gray-100">
-  <div class="flex flex-col w-56 bg-white rounded-r-3xl overflow-hidden">
-    <div class="flex items-center justify-center h-20 shadow-md">
-      <h1 class="text-3xl uppercase text-indigo-500">SAGE</h1>
+  <div class="min-h-screen flex flex-row bg-gray-100">
+    <div class="flex flex-col w-56 bg-white rounded-r-3xl overflow-hidden">
+      <div class="flex items-center justify-center h-20 shadow-md">
+        <h1 class="text-3xl uppercase text-indigo-500">SAGE</h1>
+      </div>
+      <ul class="flex flex-col py-4">
+        <li>
+          <a href="/"
+            class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
+            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400"><i
+                class="bx bx-home"></i></span>
+            <span class="text-sm font-medium">Home</span>
+          </a>
+        </li>
+        {% if request.user.is_authenticated %}
+        <li>
+          <a href="{% url 'account_logout' %}"
+            class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
+            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400"><i
+                class="bx bx-log-out"></i></span>
+            <span class="text-sm font-medium">Logout</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'feed:new_post' %}"
+            class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800 js-toggle-modal">
+            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400"><i
+                class="bx bxs-l"></i></span>
+            <span class="text-sm font-medium">New Post</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'profile:detail' user.username %}"
+            class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800 ">
+            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400"><i
+                class="bx bxs-l"></i></span>
+            <span class="text-sm font-medium">My Profile</span>
+          </a>
+        </li>
+        {% else %}
+        <li>
+          <a href="{% url 'account_login' %}"
+            class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
+            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400"><i
+                class="bx bx-log-in"></i></span>
+            <span class="text-sm font-medium">Login</span>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
     </div>
-    <ul class="flex flex-col py-4">
-      <li>
-        <a href="/" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
-          <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400"><i class="bx bx-home"></i></span>
-          <span class="text-sm font-medium">Home</span>
-        </a>
-      </li>
-      {% if request.user.is_authenticated %}
-        <li>
-            <a href="{% url 'account_logout' %}" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
-                <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400"><i class="bx bx-log-out"></i></span>
-                <span class="text-sm font-medium">Logout</span>
-            </a>
-        </li>
-      {% else %}
-        <li>
-            <a href="{% url 'account_login' %}" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
-                <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400"><i class="bx bx-log-in"></i></span>
-                <span class="text-sm font-medium">Login</span>
-            </a>
-        </li>
-      {% endif %}
-    </ul>
+    <div class="p-16">
+
+      {% block body %}
+      {% block content%}{% endblock %}
+      {% endblock %}
+    </div>
+    {%if request.user.is_authenticated %}
+
+    {% comment %} <button @click="showModal = !showModal"
+      class="px-4 py-2 text-sm bg-white rounded-xl borderransition-colors duration-150 ease-linear border-gray-200 text-gray-500 focus:outline-none focus:ring-0 font-bold hover:bg-gray-50 focus:bg-indigo-50 focus:text-indigo">Open
+      Modal</button> {% endcomment %}
+
+    <div x-show="showModal"
+      class="fixed text-gray-500 flex items-center justify-center overflow-auto z-50 bg-black bg-opacity-40 left-0 right-0 top-0 bottom-0 hidden js-modal"
+      x-transition:enter="transition ease duration-300" x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100" x-transition:leave="transition ease duration-300"
+      x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+      <!-- Modal -->
+      <div x-show="showModal" class="bg-white rounded-xl shadow-2xl p-6 sm:w-10/12 mx-10"
+        @click.away="showModal = false" x-transition:enter="transition ease duration-100 transform"
+        x-transition:enter-start="opacity-0 scale-90 translate-y-1"
+        x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+        x-transition:leave="transition ease duration-100 transform"
+        x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+        x-transition:leave-end="opacity-0 scale-90 translate-y-1">
+        <!-- Title -->
+        <span class="font-bold block text-2xl mb-3">New Post </span>
+        <!-- Some beer ? -->
+        <div class="">
+          <textarea class="border-2 border-black my-4 w-full js-post-text" placeholder="Enter your post here"
+            data-post-url="{% url 'feed:new_post'%}" maxlength="240" rows="3"></textarea>
+        </div>
+
+        <!-- Buttons -->
+        <div class="text-right space-x-5 mt-5">
+          <button @click="showModal = !showModal"
+            class="px-4 py-2 text-sm bg-white rounded-xl border transition-colors duration-150 ease-linear border-gray-200 text-gray-500 focus:outline-none focus:ring-0 font-bold hover:bg-gray-50 focus:bg-indigo-50 focus:text-indigo js-toggle-modal">Cancel</button>
+          <button
+            class="bg-white text-sm text-gray-800 font-bold rounded border-b-2 border-green-500 hover:border-green-600 hover:bg-green-500 hover:text-white shadow-md py-1 px-3 inline-flex items-center js-submit"
+            type="Submit">
+            <span class="mr-2">Create Post</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path fill="currentcolor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="p-16">
-    
-    {% block body %}
-        {% block content%}{% endblock %}
-    {% endblock %}
+  {%endif%}
   </div>
-</div>    
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="{% static 'js/main.js' %}"></script>
 </body>
+
 </html>
