@@ -1,11 +1,14 @@
 {%extends "base.html"%}
 
 {% block body%}
-
-<form method='POST' enctype="multipart/form-data">
-    {%csrf_token%}
-    {{form.as_p}}
-    <input type=submit value="update" data-url="{% url 'profile:detail' user.username %}" />
-</form>
+<div class="shadow-wrap">
+    <div class="form-wrap">
+        <form method='POST' enctype="multipart/form-data">
+            {%csrf_token%}
+            {{form.as_p}}
+            <input type=submit value="update" data-url="{% url 'profile:detail' user.username %}" />
+        </form>
+    </div>
+</div>
 
 {% endblock%}

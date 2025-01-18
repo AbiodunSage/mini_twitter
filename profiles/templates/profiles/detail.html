@@ -15,6 +15,9 @@
     </div>
     <div class="text-center px-3 pb-6 pt-2">
         <h3 class="text-white text-sm bold font-sans">{{user.username}}</h3>
+        <h3 class="text-white text-sm bold font-sans">{{user.last_name}}</h3>
+        <h3 class="text-white text-sm bold font-sans">{{user.first_name}}</h3>
+        <h3 class="text-white text-sm bold font-sans">{{user.email}}</h3>
         {%if request.user.is_authenticated %}
         {% if request.user != user %}
         <button

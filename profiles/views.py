@@ -5,6 +5,7 @@ from django.http import JsonResponse,HttpResponseBadRequest
 from django.shortcuts import render
 from .models import Profile
 from .forms import ProfileUpdateForm
+from django.urls import reverse_lazy
 
 
 from followers.models import Followers
@@ -40,7 +41,11 @@ class ProfileUpdateView(UpdateView):
      model = Profile
      form_class = ProfileUpdateForm
      template_name='profiles/update.html'
-     success_url=('/')
+
+
+     def get_success_url(self):
+        return reverse_lazy('profile:detail', kwargs={'username': self.object.user.username})
+
 
      def get_form_kwargs(self):
           kwargs = super().get_form_kwargs()
